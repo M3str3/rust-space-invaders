@@ -219,9 +219,17 @@ impl EventHandler for Game {
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         match self.state {
             GameState::Playing => {
-                // Clear screen + background
+                // Clear screen 
                 ggez::graphics::clear(ctx, Color::new(255.0, 255.0, 255.0, 1.0));
-                ggez::graphics::draw(ctx, &self.background, ggez::graphics::DrawParam::new())?;
+                
+                // Getting screen dimensions + background dimensions
+                let screen_size = ggez::graphics::drawable_size(&ctx);
+                let image_dims = self.background.dimensions();
+                let scale_x = screen_size.0 / image_dims.w;
+                let scale_y = screen_size.1 / image_dims.h;
+
+                // Setting background
+                ggez::graphics::draw(ctx, &self.background, ggez::graphics::DrawParam::new().scale([scale_x, scale_y]))?;
 
                 // Draw bullets
                 for bullet in &mut self.bullets {
